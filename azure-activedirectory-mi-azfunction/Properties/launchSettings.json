@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "azure_activedirectory_mi_azfunction": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7019",
+      "launchBrowser": false
+    }
+  }
+}
