@@ -20,18 +20,19 @@ namespace azure_activedirectory_mi_azfunction
     public class ManagedIdentity
     {
         private readonly HttpClient _httpclient;
+        private readonly ILogger<ManagedIdentity> _log;
 
-        public ManagedIdentity(IHttpClientFactory httpClientFactory)
+        public ManagedIdentity(IHttpClientFactory httpClientFactory, ILogger<ManagedIdentity> log)
         {
             _httpclient = httpClientFactory.CreateClient();
+            _log = log;
         }
 
         [FunctionName("ManagedIdentity")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
-            ILogger log)
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            _log.LogInformation("C# HTTP trigger function processed a request.");
 
             string client_id = req.Query["client_id"];
 
@@ -39,9 +40,9 @@ namespace azure_activedirectory_mi_azfunction
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             client_id ??= data?.client_id;
 
-            string token = await GetManagedIdentityTokenUsingMSAL(log, client_id).ConfigureAwait(false);
+            string token = await GetManagedIdentityTokenUsingMSAL(_log, client_id).ConfigureAwait(false);
 
-            var secret = await GetKeyVaultSecret(log, token).ConfigureAwait(false);
+            var secret = await GetKeyVaultSecret(_log, token).ConfigureAwait(false);
 
             return new OkObjectResult("Secret Value is : " + secret);
         }
