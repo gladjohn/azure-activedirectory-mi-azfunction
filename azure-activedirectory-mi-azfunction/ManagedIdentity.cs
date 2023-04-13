@@ -59,7 +59,7 @@ namespace azure_activedirectory_mi_azfunction
                     .ExecuteAsync()
                     .ConfigureAwait(false);
                 
-                log.LogInformation("Access token acquired.");
+                log.LogInformation("Access token acquired successfully.");
 
                 return result.AccessToken;
             }
